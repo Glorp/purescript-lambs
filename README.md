@@ -1,0 +1,2 @@
+# purescript-lambs
+lambs
