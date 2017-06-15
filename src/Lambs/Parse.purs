@@ -87,7 +87,7 @@ exp = fix (\self -> many (notAppW self) >>= applify)
     applify Nil = fail "want more than zero expressions :("
     applify (hd : tl) = pure (foldl App hd tl)
 
-paren :: forall a b m. (StringLike a, Monad m) => ParserT a m b -> ParserT a m b
+paren :: forall a b m.StringLike a => Monad m => ParserT a m b -> ParserT a m b
 paren x = between (string "(") (string ")") x
 
 term :: Parser String Term

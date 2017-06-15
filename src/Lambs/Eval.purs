@@ -69,10 +69,8 @@ idNum s =
       do
         i <- halp (length s - 1)
         spl <- splitAt i s
-        pre <- head spl
-        nstr <- last spl
-        n <- fromString nstr
-        Just (IdNum pre n)
+        n <- fromString spl.after
+        Just (IdNum spl.before n)
 
 uniqueId :: Set.Set String -> String -> String
 uniqueId used str =
