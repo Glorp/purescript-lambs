@@ -1,4 +1,4 @@
-module Lambs.Parse (parseTop, removeComment) where
+module Lambs.Parse (parseTop) where
 
 import Data.Array as Array
 import Data.Set as Set
@@ -129,8 +129,9 @@ run p x =
 parse :: String -> Maybe Term
 parse = run term
 
+-- | Parses a toplevel thing.
 parseTop :: String -> Maybe Toplevel
-parseTop s =
+parseTop str =
   case run undef s of
     Just u -> Just (Undef u)
     Nothing ->
@@ -140,6 +141,7 @@ parseTop s =
           case run term s of
             Just t -> Just (Trm t)
             Nothing -> Nothing
+  where s = removeComment str
 
 removeComment :: String -> String
 removeComment s =

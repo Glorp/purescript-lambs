@@ -1,7 +1,6 @@
-module Lambs.Eval (Exec(..), stepExec, idNum, IdNum(..)) where
+module Lambs.Eval (Exec(..), stepExec) where
 
 import Data.Set as Set
-import Data.Array (head, last)
 import Data.Generic (class Generic, gCompare, gEq, gShow)
 import Data.Int (fromString)
 import Data.Maybe (Maybe(..))
@@ -10,6 +9,19 @@ import Lambs.Subst (Redex(..), redex, subst)
 import Lambs.Term (Found(..), Term(..), TermPath, argStep, emptyTermPath, fillTerm, findTerm, funStep, lamStep)
 import Prelude (class Eq, class Ord, class Show, Unit, show, unit, (&&), (+), (/=), (<>), (==), (-), bind)
 
+-- | An `Exec` is used to represent one step of execution. Is one of following:
+-- |
+-- |  * A `Reduce`, for one step of beta reduction, with:
+-- |    1. old `Term`
+-- |    2. the `Term` after one step of beta reduction
+-- |  * A `Rename`, for the renaming of one variable (one parameter and every
+-- |    reference to it). Typically for avoiding variable capture. Has:
+-- |    1. old name of variable
+-- |    2. old `Term`
+-- |    3. new name of variable
+-- |    4. the `Term` with variable renamed to new name
+-- |  * A `Normal`, for the, ah, determination that a `Term` is on normal form. Has:
+-- |    1. the `Term` that is on normal form
 data Exec
   = Reduce Term Term
   | Rename String Term String Term
@@ -106,6 +118,7 @@ findConflict argFree (Redex arg param body) = find emptyTermPath body
         next (App f a) =
           orElse (find (funStep a tp) f) (\_ -> find (argStep f tp) a)
 
+-- | For performing one step of execution.
 stepExec :: Term -> Exec
 stepExec term =
   case findTerm redex term of

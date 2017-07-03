@@ -5,6 +5,10 @@ import Lambs.Define (Define, Undefine)
 import Prelude (class Eq, class Ord, class Show)
 import Data.Generic (class Generic, gCompare, gEq, gShow)
 
+-- | `Toplevel` things are for toplevel things. Can be:
+-- |  * `Def`initions, for adding toplevel defintions
+-- |  * `Undef`initions, for removing toplevel defintions
+-- |  * `Trm`s, with `Term`s in them. The `Term`s can be evaluated (is fun)
 data Toplevel
   = Def Define
   | Undef Undefine
