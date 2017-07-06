@@ -11,17 +11,17 @@ import Data.String (fromCharArray)
 import Lambs.Define (Define(..), Undefine(..))
 import Lambs.Term (Term(..))
 import Lambs.Toplevel (Toplevel(..))
-import Prelude (class Monad, Unit, bind, pure, unit, (*), (+), (/=), (<<<), (>>=))
+import Prelude (class Monad, Unit, bind, pure, unit, (*), (+), (/=), (<<<), (>>=), not)
 import Text.Parsing.Parser (Parser, ParserT, fail, runParser)
 import Text.Parsing.Parser.Combinators (between, optional)
 import Text.Parsing.Parser.String (class StringLike, eof, satisfy, string)
-import Text.Parsing.Parser.Token (alphaNum, letter)
+import Text.Parsing.Parser.Token (letter)
 
 c :: forall a b.a -> b -> Parser String a
 c n _ = pure n
 
 reserved :: Set.Set Char
-reserved = Set.fromFoldable [':', '\\', '≜', 'λ', ' ', '\n', '\t', '.']
+reserved = Set.fromFoldable [':', '\\', '≜', 'λ', ' ', '\n', '\t', '.', '(', ')']
 
 many1 :: forall a b. Parser a b -> Parser a (List b)
 many1 p = many p >>= halp
@@ -33,7 +33,7 @@ listString :: List Char -> String
 listString l = fromCharArray (Array.fromFoldable l)
 
 identifier :: Parser String String
-identifier = many1 alphaNum >>= pure <<< listString
+identifier = many1 (satisfy (\x -> not (Set.member x reserved))) >>= pure <<< listString
 
 letters :: Parser String String
 letters = many1 letter >>= pure <<< listString
