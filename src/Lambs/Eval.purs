@@ -87,7 +87,7 @@ idNum s =
 uniqueId :: Set.Set String -> String -> String
 uniqueId used str =
   case idNum str of
-    IdNum s n -> halp s n
+    IdNum s n -> halp s (n + 1)
   where
     halp s n =
       let newId = s <> show n
@@ -127,7 +127,7 @@ stepExec term =
   where
     renameHalp :: Found Redex -> Ren -> Exec
     renameHalp (Found tp (Redex arg param body)) (Ren old new t) =
-      Rename old term new (App (Lam param (fillTerm tp t)) arg)
+      Rename old term new (fillTerm tp ((App (Lam param t)) arg))
 
     reduceRename :: Found Redex -> Maybe (Found Conflict) -> Exec
     reduceRename (Found tp r) Nothing = Reduce term (fillTerm tp (subst r))
