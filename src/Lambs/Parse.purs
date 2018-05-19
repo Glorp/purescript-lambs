@@ -81,6 +81,7 @@ exp ::  Parser String Term
 exp = fix (\self -> many (notAppW self) >>= applify)
   where
     notAppW ex = do
+      _ <- white
       t <- notApp ex
       _ <- white
       pure t
